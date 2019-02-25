@@ -1,11 +1,20 @@
+import os,sys
+import datetime
 from flask import Flask,jsonify
-from config import DevelopmentConfig
-app = Flask(__name__)
-app.config.from_object(DevelopmentConfig)
+from flask_sqlalchemy import SQLAlchemy
 
-@app.route("/ping",methods=['GET'])
-def ping_pong():
-    return jsonify({
-        'status':'success',
-        'message':'pong'
-    })
+
+db=SQLAlchemy()
+
+def create_app():
+
+    app = Flask(__name__)
+
+    app_settings = os.getenv('APP_SETTINGS')
+    app.config.from_object(app_settings)
+
+    db.init_app(app)
+
+    from project.api.views import users_blueprint
+    app.register_blueprint(users_blueprint)
+    return app
