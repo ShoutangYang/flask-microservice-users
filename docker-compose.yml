@@ -3,7 +3,9 @@ version: '2.1'
 services:
   users-db:
     container_name: users-db
-    build: ./project/db
+    build: 
+      context:  ./services/users/project/db
+      dockerfile: Dockerfile
     ports: 
       - 3307:3306
     environment: 
@@ -13,9 +15,11 @@ services:
 
   users-service:
     container_name: users-service
-    build: ./
+    build: 
+      context: ./services/users
+      dockerfile: Dockerfile
     volumes:
-      - '.:/usr/src/app'
+      - './services/users:/usr/src/app'
     ports:
       - 5001:5000
     environment:
@@ -24,9 +28,38 @@ services:
       - DATABASE_TEST_URL=mysql+pymysql://root:root@users-db:3306/users_test
     
     depends_on:
-      users-db:
-        condition: service_healthy
+      - users-db
+       
     links:
       - users-db
+
+  client:
+    container_name: client
+    build:
+     context: ./services/client
+     dockerfile: Dockerfile-dev
+    volumes:
+     - './services/client:/usr/src/app'
+    ports:
+      - '3007:3000'
+    environment:
+      - NODE_ENV=development
+      # - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+    depends_on:
+      - users-service
+    links:
+      - users-service
+  
+  nginx:
+    container_name: nginx
+    build: ./services/nginx
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - users-service
+      - client
+    links:
+      - users-service
 
 
