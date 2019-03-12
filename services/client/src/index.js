@@ -7,7 +7,7 @@ import * as serviceWorker from './serviceWorker';
 import UserList from './components/UserList';
 import AddUser from './components/AddUser';
 
-const URL = 'http://127.0.0.1:5001';
+const URL = 'http://54.169.107.212:5001';
 
 class App extends Component {
 	constructor() {
