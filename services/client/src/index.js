@@ -25,7 +25,7 @@ class App extends Component {
 	}
 	getUsers() {
 		axios
-			.get('http://0.0.0.0:5001/users')
+			.get('http://54.169.107.212:5001/users')
 			.then((res) => {
 				this.setState({
 					users: res.data.data.users
@@ -46,7 +46,7 @@ class App extends Component {
 			email: this.state.email
 		};
 		axios
-			.post('http://0.0.0.0:5001/users', data)
+			.post('http://54.169.107.212:5001/users', data)
 			.then((res) => {
 				console.log(res);
 				this.getUsers();
